@@ -11,7 +11,7 @@ const HomeStack = () => (
       name="HomeStack"
       component={Home}
       options={{
-        header: () => <Header />
+        header: () => <Header />,
       }}
     />
   </Stack.Navigator>

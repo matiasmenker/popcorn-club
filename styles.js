@@ -1,34 +1,12 @@
 export const colors = {
-    greyStrong: '#11181c',
-    grey: '#687076',
-    greyLight: '#fbfcfd',
-    pink: '#7132f5',
-    white: '#ffffff',
-    border: '#e5e7eb',
-    background: '#f6f5f9',
-    silver: '#e74c3c',
-    primary: '#df0707	'
-  }
-
-export const boxShadow = {
-  backgroundColor: colors.white,
-  borderRadius: 10,
-}
-
-export const sectionTitle = {
-  color: colors.greyStrong,
-  fontSize: 20,
-  fontWeight: '600',
-}
-
-export const title = {
-  color: colors.greyStrong,
-  fontSize: 18,
-  fontWeight: '500',
-}
-
-export const text = {
-  color: colors.grey,
-  fontSize: 14,
-  fontWeight: '400',
-}
+  grey100: '#b3b3b3',
+  grey200: '#1a1a1a',
+  grey300: '#121212',
+  grey400: '#101010',
+  grey500: '#11181c',
+  black: '#000000',
+  pink: '#7132f5',
+  white: '#FFFFFF',
+  border: '#e5e7eb',
+  silver: '#e74c3c',
+};

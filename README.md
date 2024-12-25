@@ -1,10 +1,8 @@
-
-
 <div style="display: flex; align-items: center; justify-content: flex-start; font-family: Arial, sans-serif; font-size: 24px; font-weight: bold;">
 
   <img src="./assets/logo.webp" alt="Popcorn Club Logo" width="50" height="50" style="margin-right: 10px;">
   Popcorn Club App <span style="color: grey; margin-left: 5px; font-size: 10px;">by Matias Menker</span>
-</div> 
+</div>
 
 <br>
 

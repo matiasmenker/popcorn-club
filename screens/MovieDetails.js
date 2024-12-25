@@ -2,14 +2,12 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
 
 function MovieDetails({ route }) {
-  const { title, genres, overview, popularity, vote, releaseDate, image } = route.params;
+  const { title, genres, overview, popularity, vote, releaseDate, image } =
+    route.params;
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.imageContainer}>
-        <Image
-          source={{ uri: image }}
-          style={styles.poster}
-        />
+        <Image source={{ uri: image }} style={styles.poster} />
       </View>
       <View style={styles.content}>
         <Text style={styles.title}>{title}</Text>
@@ -38,15 +36,15 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    display: 'flex', 
-    marginTop: 20
+    display: 'flex',
+    marginTop: 20,
   },
   poster: {
-    width: 250, 
+    width: 250,
     height: 200,
     borderRadius: 10,
     resizeMode: 'scale',
-    backgroundColor: 'grey'
+    backgroundColor: 'grey',
   },
   content: {
     padding: 20,
@@ -77,7 +75,6 @@ const styles = StyleSheet.create({
     color: '#333',
     marginTop: 20,
     marginBottom: 10,
-    
   },
   overview: {
     fontSize: 16,

@@ -1,8 +1,8 @@
-import React from "react";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Watchlist from "../screens/Watchlist";
-import MovieDetails from "../screens/MovieDetails";
-import Header from "../components/Header";
+import React from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Watchlist from '../screens/Watchlist';
+import MovieDetails from '../screens/MovieDetails';
+import Header from '../components/Header';
 
 const Stack = createNativeStackNavigator();
 
@@ -19,7 +19,7 @@ const WatchlistStack = () => (
       name="MovieDetails"
       component={MovieDetails}
       options={({ navigation, route }) => ({
-        header: () => <Header showBackButton={true} />
+        header: () => <Header showBackButton={true} />,
       })}
     />
   </Stack.Navigator>

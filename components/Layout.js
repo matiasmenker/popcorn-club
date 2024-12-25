@@ -4,11 +4,16 @@ import { colors } from '../styles';
 
 const Layout = ({ children, paddingVertical = 20, paddingHorizontal = 15 }) => {
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-      <View style={{
-        paddingVertical,
-        paddingHorizontal
-      }}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+    >
+      <View
+        style={{
+          paddingVertical,
+          paddingHorizontal,
+        }}
+      >
         {children}
       </View>
     </ScrollView>
@@ -18,11 +23,11 @@ const Layout = ({ children, paddingVertical = 20, paddingHorizontal = 15 }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: colors.grey200,
   },
   contentContainer: {
     flexGrow: 1,
-  }
+  },
 });
 
 export default Layout;

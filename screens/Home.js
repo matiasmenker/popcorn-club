@@ -1,96 +1,73 @@
-import React from "react";
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { View, StyleSheet, FlatList, Dimensions } from 'react-native';
+import Layout from '../components/Layout';
+import Card from '../components/Card';
+import Title from '../components/Title';
+import { formatDate } from '../utils/Date';
+import { useFetchMovies } from '../hooks/useFetchMovies';
 
-const Home = () => {
+const MOVIES_LOADER = [1, 2, 3, 4, 5, 6];
+
+const MoviesSection = ({ title, layout = 'vertical', name }) => {
+  const movies = useFetchMovies(name);
+
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.subtitle}>
-          Explore and discover movies with popular lists, detailed information, and more.
-        </Text>
+    <View style={styles.sectionContainer}>
+      <View style={styles.titleContainer}>
+        <Title>{title}</Title>
       </View>
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Features</Text>
-        <View style={styles.list}>
-          <Text style={styles.listItem}>- Browse by category, such as Drama, Populars, etc.</Text>
-          <Text style={styles.listItem}>- View detailed movie information, including genres, popularity, and synopsis.</Text>
-          <Text style={styles.listItem}>- Save movies to your Watchlist for later.</Text>
-          <Text style={styles.listItem}>- Reproduce Official Trailers for the movies.</Text>
-        </View>
-      </View>
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Screens</Text>
-        <View>
-          <Text style={styles.listItem}><Text style={styles.bold}>Home:</Text> View trending and popular movies at a glance.</Text>
-          <Text style={styles.listItem}><Text style={styles.bold}>Movies:</Text> Browse movie lists.</Text>
-          <Text style={styles.listItem}><Text style={styles.bold}>Movie Detail:</Text> Explore in-depth information about a specific movie.</Text>
-          <Text style={styles.listItem}><Text style={styles.bold}>Watchlist:</Text> Access your saved movies for later viewing.</Text>
-        </View>
-      </View>
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Data API</Text>
-        <Text style={styles.description}>
-          The app utilizes the <Text style={styles.bold}>The Movie Database (TMDb)</Text> API to fetch movie data. A custom API layer has been implemented using Vercel to protect sensitive information like the API key. 
-        </Text>
-      </View>
-    </ScrollView>
+      <FlatList
+        data={movies.isSuccess ? movies.data : MOVIES_LOADER}
+        renderItem={({ item, index }) =>
+          movies.isSuccess ? (
+            <Card
+              title={item.title}
+              subtitle={
+                layout === 'horizontal'
+                  ? formatDate(item.releaseDate)
+                  : undefined
+              }
+              image={layout === 'horizontal' ? item.secondaryImage : item.image}
+              isFirst={index === 0}
+              layout={layout}
+            />
+          ) : (
+            <Card isLoading={true} isFirst={index === 0} layout={layout} />
+          )
+        }
+        keyExtractor={(item, index) =>
+          movies.isSuccess ? `${index}_${item.id}` : `loading_${index}`
+        }
+        horizontal
+        showsHorizontalScrollIndicator={false}
+      />
+    </View>
   );
 };
 
+function Home() {
+  return (
+    <Layout paddingHorizontal={0}>
+      <View>
+        <MoviesSection
+          title="Coming Soon"
+          name="upcoming"
+          layout="horizontal"
+        />
+        <MoviesSection title="Popular" name="popular" layout="vertical" />
+        <MoviesSection title="Top Rated" name="top_rated" layout="vertical" />
+      </View>
+    </Layout>
+  );
+}
+
 const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    backgroundColor: '#f9f9f9',
+  sectionContainer: {
+    marginBottom: 25,
   },
-  header: {
-    alignItems: 'left',
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'left',
-    marginTop: 10,
-  },
-  section: {
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 22,
-    fontWeight: '600',
-    color: '#444',
-    marginBottom: 10,
-  },
-  listItem: {
-    fontSize: 16,
-    color: '#555',
-    marginBottom: 8,
-  },
-  bold: {
-    fontWeight: 'bold',
-  },
-  description: {
-    fontSize: 16,
-    color: '#555',
-    lineHeight: 24,
-  },
-  footer: {
-    marginTop: 20,
-    alignItems: 'left',
-  },
-  footerText: {
-    fontSize: 16,
-    color: '#555',
-  },
-  footerEmail: {
-    fontSize: 16,
-    color: '#007BFF',
-    marginTop: 5,
+  titleContainer: {
+    paddingBottom: 10,
+    paddingHorizontal: 15,
   },
 });
 

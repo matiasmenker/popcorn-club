@@ -1,33 +1,31 @@
-import Layout from "../components/Layout";
-import { Alert, View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { getMovies } from "../services/data";
-import { boxShadow, colors } from "../styles";
+import Layout from '../components/Layout';
+import { Alert, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { boxShadow, colors } from '../styles';
 import { FontAwesome6 } from '@expo/vector-icons';
 
 function Movies({ navigation }) {
-  const movies = getMovies();
+  const movies = [];
 
-
-  const createWatchlistAlert = () =>
-    Alert.alert(
-      'Add movie to your Watchlist',
-    );
+  const createWatchlistAlert = () => Alert.alert('Add movie to your Watchlist');
 
   return (
     <Layout>
-      {movies.map((movie) => {
+      {movies && movies.length > 0 && movies.map((movie) => {
         return (
           <TouchableOpacity
             key={movie.id}
             style={styles.container}
-            onPress={() => navigation.navigate("MovieDetails", movie)}
+            onPress={() => navigation.navigate('MovieDetails', movie)}
           >
-              <View style={styles.details}>
-                <Text style={styles.title}>{movie.title}</Text>
-                <FontAwesome6 name="heart" color={colors.primary} size={20}             
+            <View style={styles.details}>
+              <Text style={styles.title}>{movie.title}</Text>
+              <FontAwesome6
+                name="heart"
+                color={colors.primary}
+                size={20}
                 onPress={() => createWatchlistAlert()}
-                />
-              </View>
+              />
+            </View>
           </TouchableOpacity>
         );
       })}
@@ -52,11 +50,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     color: colors.text,
-    fontWeight: '00'
+    fontWeight: '00',
   },
   watchlist: {
     padding: 8,
-  }
+  },
 });
 
 export default Movies;
