@@ -23,36 +23,40 @@ const Card = (props) => {
     isFirst,
     isLoading,
     layout = 'vertical',
+    width = layout === 'horizontal' ? 300 : CARD_WIDTH,
+    height = 180,
   } = props;
-  const isHorizontal = layout === 'horizontal';
-  const cardWidth = isHorizontal ? 300 : CARD_WIDTH;
-  const cardHeight = 180;
+  const cardWidth = width;
+  const cardHeight = height;
 
   return isLoading ? (
     <ShimmerPlaceholder
       LinearGradient={LinearGradient}
       width={cardWidth}
       height={cardHeight}
-      shimmerColors={['#1e1e1e', '#2c2c2c', '#1e1e1e']}
-      style={[styles.loader, isFirst && styles.firstCard]}
+      shimmerColors={styles.loader.shimmerColors}
+      style={[styles.loader.base, isFirst && styles.loader.firstCard]}
     />
   ) : (
     <View
       style={[
-        styles.container,
+        styles.container.base,
         { width: cardWidth, height: cardHeight },
-        isFirst && styles.firstCard,
+        layout === 'horizontal'
+          ? styles.container.horizontal
+          : styles.container.vertical,
+        isFirst && styles.container.firstCard,
       ]}
     >
       <ImageBackground
         source={{ uri: image }}
-        style={styles.imageBackground}
-        imageStyle={styles.imageStyle}
+        style={styles.imageBackground.base}
+        imageStyle={styles.imageBackground.imageStyle}
       >
-        {isHorizontal && (title || subtitle) && (
+        {layout === 'horizontal' && (title || subtitle) && (
           <View style={styles.textContainer}>
-            {title && <Text style={styles.title}>{title}</Text>}
-            {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
+            {title && <Text style={styles.text.title}>{title}</Text>}
+            {subtitle && <Text style={styles.text.subtitle}>{subtitle}</Text>}
           </View>
         )}
       </ImageBackground>
@@ -62,28 +66,43 @@ const Card = (props) => {
 
 const styles = StyleSheet.create({
   loader: {
-    borderRadius: 15,
-    marginHorizontal: 10,
+    base: {
+      borderRadius: 15,
+      marginHorizontal: 5,
+    },
+    shimmerColors: ['#1e1e1e', '#2c2c2c', '#1e1e1e'],
+    firstCard: {
+      marginLeft: 15,
+    },
   },
   container: {
-    borderRadius: 15,
-    overflow: 'hidden',
-    marginHorizontal: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    elevation: 8,
-  },
-  firstCard: {
-    marginLeft: 15,
+    base: {
+      borderRadius: 15,
+      overflow: 'hidden',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.3,
+      shadowRadius: 6,
+      elevation: 8,
+    },
+    firstCard: {
+      marginLeft: 15,
+    },
+    horizontal: {
+      marginHorizontal: 8,
+    },
+    vertical: {
+      marginHorizontal: 5,
+    },
   },
   imageBackground: {
-    flex: 1,
-    justifyContent: 'flex-end',
-  },
-  imageStyle: {
-    borderRadius: 15,
+    base: {
+      flex: 1,
+      justifyContent: 'flex-end',
+    },
+    imageStyle: {
+      borderRadius: 15,
+    },
   },
   textContainer: {
     height: '100%',
@@ -91,16 +110,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     justifyContent: 'flex-end',
   },
-  title: {
-    color: colors.white,
-    fontSize: 16,
-    fontFamily: 'Lato_700Bold',
-  },
-  subtitle: {
-    color: '#ccc',
-    fontSize: 14,
-    marginBottom: 10,
-    fontFamily: 'Lato_400Regular',
+  text: {
+    title: {
+      color: colors.white,
+      fontSize: 16,
+      fontFamily: 'Lato_700Bold',
+    },
+    subtitle: {
+      color: '#ccc',
+      fontSize: 14,
+      marginBottom: 10,
+      fontFamily: 'Lato_400Regular',
+    },
   },
 });
 

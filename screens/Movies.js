@@ -1,59 +1,89 @@
-import Layout from '../components/Layout';
-import { Alert, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { boxShadow, colors } from '../styles';
-import { FontAwesome6 } from '@expo/vector-icons';
+import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
+import {
+  Dimensions,
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Image,
+} from 'react-native';
+import { useFetchMovies } from '../hooks/useFetchMovies';
+import React, { useState } from 'react';
+import CategoryPicker from '../components/CategoryPicker';
+import Card from '../components/Card';
+import { colors } from '../styles';
 
-function Movies({ navigation }) {
-  const movies = [];
+const { width } = Dimensions.get('window');
+const CARD_WIDTH = width / 2 - 20;
 
-  const createWatchlistAlert = () => Alert.alert('Add movie to your Watchlist');
+const MoviesSectionScreen = ({ categories }) => {
+  const movies = useFetchMovies(`categories?id=${categories.join(',')}`);
+
+  const renderItem = ({ item, index }) => (
+    <Card
+      title={item.title}
+      subtitle={item.releaseDate}
+      image={item.image}
+      isLoading={movies.isLoading}
+      layout="vertical"
+      width={CARD_WIDTH}
+      height={230}
+    />
+  );
 
   return (
-    <Layout>
-      {movies && movies.length > 0 && movies.map((movie) => {
-        return (
-          <TouchableOpacity
-            key={movie.id}
-            style={styles.container}
-            onPress={() => navigation.navigate('MovieDetails', movie)}
-          >
-            <View style={styles.details}>
-              <Text style={styles.title}>{movie.title}</Text>
-              <FontAwesome6
-                name="heart"
-                color={colors.primary}
-                size={20}
-                onPress={() => createWatchlistAlert()}
-              />
-            </View>
-          </TouchableOpacity>
-        );
-      })}
-    </Layout>
+    <View style={styles.sectionContainer}>
+      <FlatList
+        data={movies.isLoading ? Array(10).fill({}) : movies.data} // Show placeholders if loading
+        renderItem={renderItem}
+        keyExtractor={(item, index) => {
+          return movies.isLoading ? `placeholder_${index}` : `movie_${index}`;
+        }}
+        numColumns={2}
+        columnWrapperStyle={styles.sectionRow}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.listContent}
+        showsHorizontalScrollIndicator={false}
+      />
+    </View>
   );
-}
+};
+
+const Movies = ({ navigation, route }) => {
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  return (
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container} edges={['top']}>
+        <CategoryPicker
+          selectedCategories={selectedCategories}
+          setSelectedCategories={setSelectedCategories}
+        />
+        <MoviesSectionScreen categories={selectedCategories} />
+      </SafeAreaView>
+    </SafeAreaProvider>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
-    ...boxShadow,
-    padding: 20,
-    marginBottom: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  details: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    backgroundColor: colors.grey200,
   },
-  title: {
-    fontSize: 16,
-    color: colors.text,
-    fontWeight: '00',
+  sectionContainer: {
+    flex: 1,
+    paddingHorizontal: 10,
   },
-  watchlist: {
-    padding: 8,
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: colors.white,
+    marginBottom: 15,
+  },
+  sectionRow: {
+    marginBottom: 10,
+  },
+  listContent: {
+    paddingBottom: 20,
   },
 });
 
