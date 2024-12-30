@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Movies from '../screens/Movies';
 import MovieDetails from '../screens/MovieDetails';
 import Header from '../components/Header';
+import Search from '../screens/Search';
 
 const Stack = createNativeStackNavigator();
 
@@ -12,7 +13,7 @@ const MoviesStack = () => (
       name="MoviesStack"
       component={Movies}
       options={{
-        header: () => <Header />,
+        header: () => <Header showSearch={true} />,
       }}
     />
     <Stack.Screen
@@ -20,6 +21,13 @@ const MoviesStack = () => (
       component={MovieDetails}
       options={({ navigation, route }) => ({
         header: () => <Header showBackButton={true} />,
+      })}
+    />
+    <Stack.Screen
+      name="Search"
+      component={Search}
+      options={({ navigation, route }) => ({
+        header: () => null,
       })}
     />
   </Stack.Navigator>

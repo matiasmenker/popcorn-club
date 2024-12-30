@@ -92,13 +92,13 @@ const CategoryPicker = ({ selectedCategories = [], setSelectedCategories }) => {
 const styles = StyleSheet.create({
   container: {
     marginHorizontal: 15,
-    marginVertical: 15,
+    marginVertical: 20,
   },
   dropdownPicker: {
     backgroundColor: '#343434',
     borderColor: '#343434',
     borderWidth: 1,
-    borderRadius: 15,
+    minHeight: 40,
   },
   dropdown: {
     backgroundColor: '#2a2a2a',
@@ -114,13 +114,15 @@ const styles = StyleSheet.create({
   badgeText: {
     color: '#fff',
     fontWeight: 'bold',
-    fontSize: 14,
+    fontSize: 12,
   },
   placeholder: {
     color: '#ffffff',
     fontWeight: 'bold',
+    fontSize: 14,
   },
   listItemLabel: {
+    fontSize: 14,
     color: '#d5d4d4',
     fontWeight: '600',
   },
@@ -128,7 +130,7 @@ const styles = StyleSheet.create({
     color: '#adadad',
   },
   listItemContainer: {
-    height: 50,
+    height: 40,
   },
   itemSeparator: {
     backgroundColor: '#212121',

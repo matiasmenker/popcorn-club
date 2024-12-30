@@ -42,7 +42,7 @@ const Home = ({ navigation }) => {
           renderSectionHeader={renderSectionHeader}
           stickySectionHeadersEnabled={false}
           renderItem={renderItem}
-          contentContainerStyle={styles.container}
+          contentContainerStyle={styles.containerSectionList}
         />
       </SafeAreaView>
     </SafeAreaProvider>
@@ -55,12 +55,15 @@ const styles = StyleSheet.create({
     backgroundColor: colors.grey200,
   },
   sectionContainer: {
-    marginBottom: 10,
+    marginBottom: 5,
   },
   sectionHeader: {
-    paddingTop: 15,
+    paddingTop: 20,
     paddingBottom: 10,
     paddingHorizontal: 15,
+  },
+  containerSectionList: {
+    paddingBottom: 20,
   },
 });
 

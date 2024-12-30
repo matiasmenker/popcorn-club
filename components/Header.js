@@ -36,7 +36,7 @@ const Header = ({ showBackButton, showSearch }) => {
             onPress={() => navigation.goBack()}
             style={styles.iconButton}
           >
-            <Ionicons name="arrow-back" size={24} color={colors.primary} />
+            <Ionicons name="arrow-back" size={24} color={colors.white} />
           </TouchableOpacity>
         )}
         {!showBackButton && (
@@ -51,7 +51,7 @@ const Header = ({ showBackButton, showSearch }) => {
             </View>
             {showSearch && (
               <TouchableOpacity
-                onPress={createTwoButtonAlert}
+                onPress={() => navigation.navigate('Search')}
                 style={styles.iconButton}
               >
                 <Ionicons name="search" size={24} color={colors.grey100} />
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   },
   centerContainer: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   logo: {
     width: 35,
