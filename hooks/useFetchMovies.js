@@ -11,6 +11,16 @@ export const mapMovie = (movie) => {
   };
 };
 
+const searchMovies = async (query) => {
+  const result = await fetchMovies(`search?query=${query}`);
+  if (result && result.length > 0) {
+    const all = result.map(mapMovie).filter((movie) => movie.image);
+    return all;
+  } else {
+    return [];
+  }
+};
+
 const fetchMovies = async (url) => {
   const response = await fetch(
     `https://popcorn-club-api.vercel.app/api/${url}`
@@ -34,4 +44,12 @@ const useFetchMovies = (url) => {
   });
 };
 
-export { useFetchMovies, fetchMovies };
+const useSearchMovies = (debouncedQuery) => {
+  return useQuery({
+    queryKey: ['searchMovies', debouncedQuery],
+    queryFn: () => searchMovies(debouncedQuery),
+    enabled: !!debouncedQuery,
+  });
+};
+
+export { useFetchMovies, useSearchMovies };

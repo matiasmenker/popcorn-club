@@ -6,6 +6,7 @@ import HomeStack from './HomeStack';
 import MoviesStack from './MoviesStack';
 import WatchlistStack from './WatchlistStack';
 import { colors } from '../styles';
+import { Ionicons } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
 
@@ -24,8 +25,8 @@ const TabNavigator = () => {
           paddingTop: Platform.OS === 'ios' ? 10 : 10,
         },
         tabBarLabelStyle: {
-            fontSize: 11,
-            fontFamily: 'Lato_400Regular',
+          fontSize: 11,
+          fontFamily: 'Lato_400Regular',
         },
         unmountOnBlur: true,
       }}
@@ -37,9 +38,9 @@ const TabNavigator = () => {
           headerShown: false,
           tabBarLabel: 'Home',
           tabBarIcon: ({ color, size }) => (
-            <FontAwesome6 name="house" color={color} size={20} />
+            <FontAwesome6 name="house" color={color} size={18} />
           ),
-          unmountOnBlur: false,
+          unmountOnBlur: true,
         }}
       />
       <Tab.Screen
@@ -49,8 +50,9 @@ const TabNavigator = () => {
           headerShown: false,
           tabBarLabel: 'Movies',
           tabBarIcon: ({ color, size }) => (
-            <FontAwesome6 name="film" color={color} size={20} />
+            <FontAwesome6 name="film" color={color} size={18} />
           ),
+          unmountOnBlur: true,
         }}
       />
       <Tab.Screen
@@ -60,8 +62,9 @@ const TabNavigator = () => {
           headerShown: false,
           tabBarLabel: 'Watchlist',
           tabBarIcon: ({ color, size }) => (
-            <FontAwesome6 name="heart-circle-plus" color={color} size={20} />
+            <Ionicons name="heart" color={color} size={22} />
           ),
+          unmountOnBlur: true,
         }}
       />
     </Tab.Navigator>

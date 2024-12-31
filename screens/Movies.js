@@ -7,7 +7,6 @@ import { colors } from '../styles';
 import MoviesList from '../components/MovieList';
 
 const Movies = ({ navigation, route }) => {
-  const [isSearch, setSearch] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const movies = useFetchMovies(
     `categories?id=${selectedCategories.join(',')}`
@@ -19,7 +18,7 @@ const Movies = ({ navigation, route }) => {
           selectedCategories={selectedCategories}
           setSelectedCategories={setSelectedCategories}
         />
-        <MoviesList movies={movies} />
+        <MoviesList movies={movies} navigation={navigation} />
       </SafeAreaView>
     </SafeAreaProvider>
   );

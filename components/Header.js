@@ -42,7 +42,7 @@ const Header = ({ showBackButton, showSearch }) => {
                 onPress={() => navigation.navigate('Search')}
                 style={styles.iconButton}
               >
-                <Ionicons name="search" size={24} color={colors.grey100} />
+                <Ionicons name="search" size={22} color={colors.grey100} />
               </TouchableOpacity>
             )}
           </>

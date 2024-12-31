@@ -1,11 +1,17 @@
 import Card from './Card';
-import { Dimensions, FlatList, StyleSheet, View } from 'react-native';
+import {
+  Dimensions,
+  FlatList,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+} from 'react-native';
 import React, { useRef, useEffect } from 'react';
 
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = (width - 50) / 3;
 
-const MoviesList = ({ movies }) => {
+const MoviesList = ({ movies, navigation }) => {
   const flatListRef = useRef(null);
 
   const scrollToTop = () => {
@@ -14,16 +20,23 @@ const MoviesList = ({ movies }) => {
     }
   };
 
-  const renderItem = ({ item, index }) => (
-    <Card
-      title={item.title}
-      subtitle={item.releaseDate}
-      image={item.image}
-      isLoading={movies.isLoading}
-      layout="vertical"
-      width={CARD_WIDTH}
-    />
-  );
+  const renderItem = ({ item, index }) => {
+    return (
+      <TouchableOpacity
+        style={styles.movieItem}
+        onPress={() => navigation.navigate('MovieDetails', { movie: item })}
+      >
+        <Card
+          title={item.title}
+          subtitle={item.releaseDate}
+          image={item.image}
+          isLoading={movies.isLoading}
+          layout="vertical"
+          width={CARD_WIDTH}
+        />
+      </TouchableOpacity>
+    );
+  };
 
   useEffect(() => {
     scrollToTop();

@@ -19,9 +19,9 @@ const MoviesStack = () => (
     <Stack.Screen
       name="MovieDetails"
       component={MovieDetails}
-      options={({ navigation, route }) => ({
+      options={{
         header: () => <Header showBackButton={true} />,
-      })}
+      }}
     />
     <Stack.Screen
       name="Search"

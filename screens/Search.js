@@ -12,47 +12,28 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../styles';
-import { fetchMovies, mapMovie } from '../hooks/useFetchMovies';
+import { useQuery } from '@tanstack/react-query';
 import { formatToDecimal } from '../utils/Numbers';
 import { getYear } from '../utils/Date';
+import { useSearchMovies } from '../hooks/useFetchMovies';
 
 const Search = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [movies, setMovies] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isInitialSearch, setIsInitialSearch] = useState(true); // Tracks if the search has started
-
-  const searchMovies = async () => {
-    setIsLoading(true);
-    setIsInitialSearch(false);
-    try {
-      const result = await fetchMovies(`search?query=${searchQuery}`);
-      if (result && result.length > 0) {
-        const all = result.map(mapMovie).filter((movie) => movie.image);
-        setMovies(all);
-      } else {
-        setMovies([]);
-      }
-    } catch (e) {
-      console.log('error', e);
-      setMovies([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const [debouncedQuery, setDebouncedQuery] = useState('');
 
   useEffect(() => {
     const handler = setTimeout(() => {
-      if (searchQuery.trim()) {
-        searchMovies();
-      } else {
-        setIsInitialSearch(true);
-        setMovies([]);
-      }
+      setDebouncedQuery(searchQuery.trim());
     }, 500);
 
     return () => clearTimeout(handler);
   }, [searchQuery]);
+
+  const {
+    data: movies = [],
+    isLoading,
+    isSuccess,
+  } = useSearchMovies(debouncedQuery);
 
   const renderMovieItem = ({ item }) => {
     if (!item.title) return null;
@@ -63,13 +44,15 @@ const Search = ({ navigation }) => {
       >
         <Image
           source={{
-            uri: item.image || 'https://via.placeholder.com/60x90',
+            uri:
+              item.image ||
+              `https://image.tmdb.org/t/p/w500${item.poster_path}`,
           }}
           style={styles.movieImage}
         />
         <View style={styles.movieDetails}>
           <Text style={styles.movieTitle}>{item.title}</Text>
-          <Text style={styles.movieDate}>{getYear(item.releaseDate)}</Text>
+          <Text style={styles.movieDate}>{getYear(item.release_date)}</Text>
           <Text style={styles.moviePopularity}>
             {formatToDecimal(item.vote_average < 5 ? 5 : item.vote_average)}
           </Text>
@@ -112,13 +95,13 @@ const Search = ({ navigation }) => {
         </View>
       )}
 
-      {!isLoading && isInitialSearch && (
+      {!isLoading && !debouncedQuery && (
         <View style={styles.centerContainer}>
           <Text style={styles.emptyText}>Start searching for movies</Text>
         </View>
       )}
 
-      {!isLoading && !isInitialSearch && movies.length === 0 && (
+      {!isLoading && debouncedQuery && movies.length === 0 && (
         <View style={styles.centerContainer}>
           <Text style={styles.emptyText}>No results found</Text>
           <Text style={styles.emptySubText}>
@@ -127,7 +110,7 @@ const Search = ({ navigation }) => {
         </View>
       )}
 
-      {!isLoading && movies.length > 0 && (
+      {isSuccess && movies.length > 0 && (
         <FlatList
           data={movies}
           keyExtractor={(item) => item.id.toString()}
