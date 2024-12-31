@@ -1,5 +1,5 @@
 import React from 'react';
-import { SectionList, Text, StyleSheet, View } from 'react-native';
+import { SectionList, StyleSheet, View } from 'react-native';
 import { useFetchMovies } from '../hooks/useFetchMovies';
 import MoviesCarousel from '../components/MoviesCarousel';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
@@ -23,8 +23,8 @@ const Home = ({ navigation }) => {
     </View>
   );
 
-  const renderItem = ({ item, section }) => (
-    <View style={styles.sectionContainer}>
+  const renderSection = ({ item, section }) => (
+    <View>
       <MoviesCarousel
         movies={item}
         layout={section.layout}
@@ -41,7 +41,7 @@ const Home = ({ navigation }) => {
           keyExtractor={(item, index) => `${item}-${index}`}
           renderSectionHeader={renderSectionHeader}
           stickySectionHeadersEnabled={false}
-          renderItem={renderItem}
+          renderItem={renderSection}
           contentContainerStyle={styles.containerSectionList}
         />
       </SafeAreaView>
@@ -53,9 +53,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.grey200,
-  },
-  sectionContainer: {
-    marginBottom: 5,
   },
   sectionHeader: {
     paddingTop: 20,

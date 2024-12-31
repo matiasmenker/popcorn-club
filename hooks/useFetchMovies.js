@@ -1,12 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
 
-const mapMovie = (movie) => {
+export const mapMovie = (movie) => {
   return {
     image: `https://image.tmdb.org/t/p/w500/${movie.poster_path}.jpg`,
     secondaryImage: `https://image.tmdb.org/t/p/original/${movie.backdrop_path}.jpg`,
     title: movie.original_title,
     id: movie.id || '',
     releaseDate: movie.release_date,
+    ...movie,
   };
 };
 
@@ -33,4 +34,4 @@ const useFetchMovies = (url) => {
   });
 };
 
-export { useFetchMovies };
+export { useFetchMovies, fetchMovies };

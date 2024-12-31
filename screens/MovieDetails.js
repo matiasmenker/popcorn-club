@@ -1,9 +1,15 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
 
-function MovieDetails({ route }) {
+function MovieDetails(props) {
+  const movieId = props.route.params.movie.id;
+
+  if (!movieId) return;
   const { title, genres, overview, popularity, vote, releaseDate, image } =
-    route.params;
+    props.route.params.movie;
+
+  console.log('props', props);
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.imageContainer}>

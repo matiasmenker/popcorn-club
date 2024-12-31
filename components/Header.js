@@ -16,18 +16,6 @@ import { colors } from '../styles';
 const Header = ({ showBackButton, showSearch }) => {
   const navigation = useNavigation();
 
-  const createTwoButtonAlert = () =>
-    Alert.alert(
-      'Search Movie',
-      'We should be able to search a movie in the next version',
-      [
-        {
-          text: 'Ok',
-          style: 'ok',
-        },
-      ]
-    );
-
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.headerContainer}>
@@ -90,7 +78,7 @@ const styles = StyleSheet.create({
     marginTop: -4,
   },
   logoText: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 'bold',
     color: colors.white,
     fontFamily: 'LuckiestGuy_400Regular',

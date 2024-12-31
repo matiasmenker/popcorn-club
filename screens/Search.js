@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   View,
@@ -12,67 +12,77 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../styles';
+import { fetchMovies, mapMovie } from '../hooks/useFetchMovies';
+import { formatToDecimal } from '../utils/Numbers';
+import { getYear } from '../utils/Date';
 
 const Search = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [isInitialSearch, setIsInitialSearch] = useState(true); // Tracks if the search has started
 
-  // Fetch movies from an API
-  const fetchMovies = async (query) => {
+  const searchMovies = async () => {
     setIsLoading(true);
-    setError(null);
-    setMovies([]);
-
+    setIsInitialSearch(false);
     try {
-      const response = await fetch(
-        `https://api.themoviedb.org/3/search/movie?api_key=YOUR_API_KEY&query=${query}`
-      );
-      const data = await response.json();
-
-      if (data.results) {
-        setMovies(data.results);
+      const result = await fetchMovies(`search?query=${searchQuery}`);
+      if (result && result.length > 0) {
+        const all = result.map(mapMovie).filter((movie) => movie.image);
+        setMovies(all);
       } else {
-        setError('No movies found.');
+        setMovies([]);
       }
-    } catch (err) {
-      setError('Something went wrong. Please try again.');
+    } catch (e) {
+      console.log('error', e);
+      setMovies([]);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleSearch = () => {
-    if (searchQuery.trim()) {
-      fetchMovies(searchQuery.trim());
-    }
-  };
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      if (searchQuery.trim()) {
+        searchMovies();
+      } else {
+        setIsInitialSearch(true);
+        setMovies([]);
+      }
+    }, 500);
 
-  const renderMovieItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.movieItem}
-      onPress={() => navigation.navigate('MovieDetails', { movie: item })}
-    >
-      <Image
-        source={{
-          uri: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
-        }}
-        style={styles.movieImage}
-      />
-      <Text style={styles.movieTitle}>{item.title}</Text>
-    </TouchableOpacity>
-  );
+    return () => clearTimeout(handler);
+  }, [searchQuery]);
+
+  const renderMovieItem = ({ item }) => {
+    if (!item.title) return null;
+    return (
+      <TouchableOpacity
+        style={styles.movieItem}
+        onPress={() => navigation.navigate('MovieDetails', { movie: item })}
+      >
+        <Image
+          source={{
+            uri: item.image || 'https://via.placeholder.com/60x90',
+          }}
+          style={styles.movieImage}
+        />
+        <View style={styles.movieDetails}>
+          <Text style={styles.movieTitle}>{item.title}</Text>
+          <Text style={styles.movieDate}>{getYear(item.releaseDate)}</Text>
+          <Text style={styles.moviePopularity}>
+            {formatToDecimal(item.vote_average < 5 ? 5 : item.vote_average)}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <View style={styles.container}>
-      {/* Row for Back Button and Search */}
       <View style={styles.searchRow}>
-        {/* Back Button */}
-
-        {/* Search Input with Search Icon */}
         <View style={styles.searchContainer}>
-          <TouchableOpacity onPress={handleSearch} style={styles.iconButton}>
+          <TouchableOpacity style={styles.iconButton}>
             <Ionicons name="search" size={20} color={colors.white} />
           </TouchableOpacity>
           <TextInput
@@ -81,7 +91,6 @@ const Search = ({ navigation }) => {
             placeholderTextColor={colors.grey100}
             value={searchQuery}
             onChangeText={setSearchQuery}
-            onSubmitEditing={handleSearch}
           />
           {searchQuery.length > 0 && (
             <TouchableOpacity
@@ -92,33 +101,40 @@ const Search = ({ navigation }) => {
             </TouchableOpacity>
           )}
         </View>
-
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Text style={styles.cancelButton}>Cancel</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Loading Indicator */}
-      {isLoading && <ActivityIndicator size="large" color="#ffffff" />}
+      {isLoading && (
+        <View style={styles.centerContainer}>
+          <ActivityIndicator size="medium" color="#ffffff" />
+        </View>
+      )}
 
-      {/* Error Message */}
-      {error && !isLoading && <Text style={styles.errorText}>{error}</Text>}
+      {!isLoading && isInitialSearch && (
+        <View style={styles.centerContainer}>
+          <Text style={styles.emptyText}>Start searching for movies</Text>
+        </View>
+      )}
 
-      {/* Movie List */}
-      <FlatList
-        data={movies}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={renderMovieItem}
-        contentContainerStyle={styles.movieList}
-        ListEmptyComponent={
-          !isLoading &&
-          !error && (
-            <Text style={styles.emptyText}>
-              Search for movies to display them here.
-            </Text>
-          )
-        }
-      />
+      {!isLoading && !isInitialSearch && movies.length === 0 && (
+        <View style={styles.centerContainer}>
+          <Text style={styles.emptyText}>No results found</Text>
+          <Text style={styles.emptySubText}>
+            Try searching for another movie
+          </Text>
+        </View>
+      )}
+
+      {!isLoading && movies.length > 0 && (
+        <FlatList
+          data={movies}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={renderMovieItem}
+          contentContainerStyle={styles.movieList}
+        />
+      )}
     </View>
   );
 };
@@ -164,36 +180,67 @@ const styles = StyleSheet.create({
     height: 40,
   },
   movieList: {
+    flexGrow: 1,
     paddingBottom: 16,
   },
   movieItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
-    backgroundColor: '#1f1f1f',
-    borderRadius: 8,
+    marginBottom: 5,
     padding: 8,
   },
   movieImage: {
     width: 60,
     height: 90,
-    borderRadius: 4,
     marginRight: 12,
+    borderRadius: 4,
+  },
+  movieDetails: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    alignContent: 'flex-start',
   },
   movieTitle: {
     color: '#fff',
-    fontSize: 14,
-    flexShrink: 1,
+    fontSize: 16,
+    fontWeight: 'bold',
   },
-  errorText: {
+  movieDate: {
     color: colors.grey100,
-    textAlign: 'center',
-    marginTop: 16,
+    fontSize: 15,
+    marginTop: 4,
+  },
+  moviePopularity: {
+    marginTop: 4,
+    backgroundColor: '#E50914',
+    paddingVertical: 4,
+    paddingHorizontal: 5,
+    borderRadius: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  centerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   emptyText: {
-    color: '#ccc',
+    color: colors.white,
+    fontSize: 18,
+    fontWeight: 'bold',
     textAlign: 'center',
-    marginTop: 16,
+    marginBottom: 8,
+    marginTop: 10,
+  },
+  emptySubText: {
+    color: colors.grey100,
+    fontSize: 14,
+    textAlign: 'center',
   },
 });
 
