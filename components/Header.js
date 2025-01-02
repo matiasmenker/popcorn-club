@@ -6,7 +6,7 @@ import {
   StyleSheet,
   SafeAreaView,
   TouchableOpacity,
-  Alert,
+  StatusBar,
   Platform,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -18,6 +18,10 @@ const Header = ({ showBackButton, showSearch, isEmpty }) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <StatusBar
+        backgroundColor={colors.grey400}
+        barStyle={Platform.OS === 'android' ? 'light-content' : 'default'}
+      />
       {!isEmpty && (
         <View style={styles.headerContainer}>
           {showBackButton && (
@@ -56,6 +60,7 @@ const Header = ({ showBackButton, showSearch, isEmpty }) => {
 
 const styles = StyleSheet.create({
   safeArea: {
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     backgroundColor: colors.grey400,
   },
   headerContainer: {
