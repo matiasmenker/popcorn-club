@@ -19,7 +19,7 @@ const WatchlistStack = () => (
       name="MovieDetails"
       component={MovieDetails}
       options={({ navigation, route }) => ({
-        header: () => <Header showBackButton={true} />,
+        header: () => <Header isEmpty={true} />,
       })}
     />
   </Stack.Navigator>

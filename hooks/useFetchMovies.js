@@ -1,5 +1,17 @@
 import { useQuery } from '@tanstack/react-query';
 
+const mapRuntime = (runtime) => {
+  const hours = Math.floor(runtime / 60);
+  const minutes = runtime % 60;
+  if (hours === 0) {
+    return `${minutes} min`;
+  }
+  if (minutes === 0) {
+    return `${hours} h`;
+  }
+  return `${hours} h ${minutes} min`;
+};
+
 export const mapMovie = (movie) => {
   return {
     image: `https://image.tmdb.org/t/p/w500/${movie.poster_path}.jpg`,
@@ -8,6 +20,7 @@ export const mapMovie = (movie) => {
     id: movie.id || '',
     releaseDate: movie.release_date,
     ...movie,
+    runtime: mapRuntime(movie.runtime),
   };
 };
 
@@ -16,6 +29,15 @@ const searchMovies = async (query) => {
   if (result && result.length > 0) {
     const all = result.map(mapMovie).filter((movie) => movie.image);
     return all;
+  } else {
+    return [];
+  }
+};
+
+const searchMovie = async (query) => {
+  const result = await fetchMovies(`movie?id=${query}`);
+  if (result) {
+    return mapMovie(result);
   } else {
     return [];
   }
@@ -44,6 +66,14 @@ const useFetchMovies = (url) => {
   });
 };
 
+const useSearchMovie = (id) => {
+  return useQuery({
+    queryKey: ['searchMovies', id],
+    queryFn: () => searchMovie(id),
+    enabled: !!id,
+  });
+};
+
 const useSearchMovies = (debouncedQuery) => {
   return useQuery({
     queryKey: ['searchMovies', debouncedQuery],
@@ -52,4 +82,4 @@ const useSearchMovies = (debouncedQuery) => {
   });
 };
 
-export { useFetchMovies, useSearchMovies };
+export { useFetchMovies, useSearchMovies, useSearchMovie };

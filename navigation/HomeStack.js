@@ -20,7 +20,7 @@ const HomeStack = () => (
       name="MovieDetails"
       component={MovieDetails}
       options={{
-        header: () => <Header showBackButton={true} />,
+        header: () => <Header isEmpty={true} />,
       }}
     />
     <Stack.Screen

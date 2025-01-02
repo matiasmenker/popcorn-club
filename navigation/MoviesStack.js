@@ -4,6 +4,8 @@ import Movies from '../screens/Movies';
 import MovieDetails from '../screens/MovieDetails';
 import Header from '../components/Header';
 import Search from '../screens/Search';
+import { colors } from '../styles';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const Stack = createNativeStackNavigator();
 
@@ -20,7 +22,7 @@ const MoviesStack = () => (
       name="MovieDetails"
       component={MovieDetails}
       options={{
-        header: () => <Header showBackButton={true} />,
+        header: () => <Header isEmpty={true} />,
       }}
     />
     <Stack.Screen

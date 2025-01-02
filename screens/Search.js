@@ -125,7 +125,7 @@ const Search = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212',
+    backgroundColor: colors.grey200,
     paddingHorizontal: 15,
     paddingVertical: 10,
   },
