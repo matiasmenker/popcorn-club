@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -7,8 +7,8 @@ import {
   ScrollView,
   Dimensions,
   TouchableOpacity,
-  ActivityIndicator,
   FlatList,
+  Platform,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -28,15 +28,9 @@ function MovieDetails({ route }) {
   const movieId = route.params.movie.id;
   if (!movieId) return;
 
-  const { data, isLoading } = useSearchMovie(movieId);
+  const { data, isSuccess } = useSearchMovie(movieId);
 
-  if (isLoading) {
-    return (
-      <View style={styles.centerContainer}>
-        <ActivityIndicator size="medium" color="#ffffff" />
-      </View>
-    );
-  } else {
+  if (isSuccess) {
     const {
       title,
       genres,
@@ -192,8 +186,8 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     position: 'relative',
-    width: DEVICE_WIDTH,
-    height: 250,
+    width: Platform.OS === 'web' ? '100%' : DEVICE_WIDTH,
+    height: Platform.OS === 'web' ? '50%' : 250,
   },
   poster: {
     width: '100%',

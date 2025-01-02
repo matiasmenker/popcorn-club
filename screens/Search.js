@@ -7,19 +7,19 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  ActivityIndicator,
   Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../styles';
-import { useQuery } from '@tanstack/react-query';
 import { formatToDecimal } from '../utils/Numbers';
 import { getYear } from '../utils/Date';
 import { useSearchMovies } from '../hooks/useFetchMovies';
+import { useNavigation } from '@react-navigation/native';
 
-const Search = ({ navigation }) => {
+const Search = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
+  const navigation = useNavigation();
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -89,12 +89,6 @@ const Search = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      {isLoading && (
-        <View style={styles.centerContainer}>
-          <ActivityIndicator size="medium" color="#ffffff" />
-        </View>
-      )}
-
       {!isLoading && !debouncedQuery && (
         <View style={styles.centerContainer}>
           <Text style={styles.emptyText}>Start searching for movies</Text>
@@ -141,7 +135,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 15,
-    marginTop: Platform.OS === 'ios' ? 60 : 80,
+    marginTop: Platform.OS === 'web' ? 10 : Platform.OS === 'ios' ? 60 : 80,
   },
   iconButton: {
     padding: 0,

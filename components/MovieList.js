@@ -1,18 +1,24 @@
-import Card from './Card';
+import React, { useEffect, useRef } from 'react';
 import {
   Dimensions,
-  FlatList,
   StyleSheet,
   View,
+  ScrollView,
   TouchableOpacity,
+  Platform,
+  FlatList,
 } from 'react-native';
-import React, { useRef, useEffect } from 'react';
+import Card from './Card';
+import { useNavigation } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
+const CARD_WEB_WIDTH = width / 5 - 20;
 const CARD_WIDTH = (width - 50) / 3;
 
-const MoviesList = ({ movies, navigation }) => {
+const MoviesList = ({ movies }) => {
+  const isWeb = Platform.OS === 'web';
   const flatListRef = useRef(null);
+  const navigation = useNavigation();
 
   const scrollToTop = () => {
     if (flatListRef.current) {
@@ -20,7 +26,42 @@ const MoviesList = ({ movies, navigation }) => {
     }
   };
 
-  const renderItem = ({ item, index }) => {
+  const renderWebMovies = () => {
+    const rows = [];
+    const data = movies.isLoading ? Array(10).fill({}) : movies.data;
+    const numColumns = 5;
+
+    for (let i = 0; i < data.length; i += numColumns) {
+      const rowItems = data.slice(i, i + numColumns);
+
+      rows.push(
+        <View key={`row_${i}`} style={styles.sectionRowWeb}>
+          {rowItems.map((item, index) => (
+            <TouchableOpacity
+              key={`movie_${index}`}
+              style={styles.cardWeb}
+              onPress={() =>
+                navigation.navigate('MovieDetails', { movie: item })
+              }
+            >
+              <Card
+                title={item.title}
+                subtitle={item.releaseDate}
+                image={item.secondaryImage}
+                isLoading={movies.isLoading}
+                layout="horizontal"
+                width={CARD_WEB_WIDTH}
+              />
+            </TouchableOpacity>
+          ))}
+        </View>
+      );
+    }
+
+    return rows;
+  };
+
+  const renderMobileItem = ({ item }) => {
     return (
       <TouchableOpacity
         style={styles.movieItem}
@@ -42,23 +83,31 @@ const MoviesList = ({ movies, navigation }) => {
     scrollToTop();
   }, [movies]);
 
-  return (
-    <View style={styles.sectionContainer}>
-      <FlatList
-        ref={flatListRef}
-        data={movies.isLoading ? Array(10).fill({}) : movies.data} // Show placeholders if loading
-        renderItem={renderItem}
-        keyExtractor={(item, index) => {
-          return movies.isLoading ? `placeholder_${index}` : `movie_${index}`;
-        }}
-        numColumns={3}
-        columnWrapperStyle={styles.sectionRow}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.listContent}
-        showsHorizontalScrollIndicator={false}
-      />
-    </View>
-  );
+  if (isWeb) {
+    return (
+      <ScrollView contentContainerStyle={styles.sectionContainer}>
+        {renderWebMovies(movies, navigation)}
+      </ScrollView>
+    );
+  } else {
+    return (
+      <View style={styles.sectionContainer}>
+        <FlatList
+          ref={flatListRef}
+          data={movies.isLoading ? Array(10).fill({}) : movies.data} // Show placeholders if loading
+          renderItem={renderMobileItem}
+          keyExtractor={(item, index) => {
+            return movies.isLoading ? `placeholder_${index}` : `movie_${index}`;
+          }}
+          numColumns={3}
+          columnWrapperStyle={styles.sectionRow}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.listContent}
+          showsHorizontalScrollIndicator={false}
+        />
+      </View>
+    );
+  }
 };
 
 const styles = StyleSheet.create({
@@ -71,6 +120,15 @@ const styles = StyleSheet.create({
   },
   listContent: {
     paddingBottom: 20,
+  },
+  sectionRowWeb: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  cardWeb: {
+    flexGrow: 1,
+    marginHorizontal: 0,
   },
 });
 

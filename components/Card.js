@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     height: '100%',
-    backgroundColor: 'rgba(0, 0, 0, .4)',
+    backgroundColor: 'rgba(0, 0, 0, .1)',
     paddingHorizontal: 10,
     justifyContent: 'flex-end',
   },

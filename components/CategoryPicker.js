@@ -93,6 +93,7 @@ const styles = StyleSheet.create({
   container: {
     marginHorizontal: 15,
     marginVertical: 20,
+    zIndex: 9999,
   },
   dropdownPicker: {
     backgroundColor: '#343434',

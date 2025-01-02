@@ -4,8 +4,6 @@ import Movies from '../screens/Movies';
 import MovieDetails from '../screens/MovieDetails';
 import Header from '../components/Header';
 import Search from '../screens/Search';
-import { colors } from '../styles';
-import { LinearGradient } from 'expo-linear-gradient';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,9 +26,9 @@ const MoviesStack = () => (
     <Stack.Screen
       name="Search"
       component={Search}
-      options={({ navigation, route }) => ({
+      options={{
         header: () => null,
-      })}
+      }}
     />
   </Stack.Navigator>
 );

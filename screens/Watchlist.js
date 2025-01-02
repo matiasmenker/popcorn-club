@@ -12,8 +12,10 @@ import React from 'react';
 import { getYear } from '../utils/Date';
 import { formatToDecimal } from '../utils/Numbers';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
-function Watchlist({ navigation }) {
+function Watchlist() {
+  const navigation = useNavigation();
   const { watchlist, removeFromWatchlist } = useWatchlist();
 
   const renderMovieItem = ({ item }) => {

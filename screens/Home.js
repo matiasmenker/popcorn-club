@@ -6,7 +6,7 @@ import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { colors } from '../styles';
 import Title from '../components/Title';
 
-const Home = ({ navigation }) => {
+const Home = () => {
   const upcomingMovies = useFetchMovies('upcoming');
   const popularMovies = useFetchMovies('popular');
   const topRatedMovies = useFetchMovies('top_rated');
@@ -25,11 +25,7 @@ const Home = ({ navigation }) => {
 
   const renderSection = ({ item, section }) => (
     <View>
-      <MoviesCarousel
-        movies={item}
-        layout={section.layout}
-        navigation={navigation}
-      />
+      <MoviesCarousel movies={item} layout={section.layout} />
     </View>
   );
 
